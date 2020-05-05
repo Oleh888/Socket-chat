@@ -57,7 +57,7 @@ class Client {
                 out.close();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("client left the chat");
         }
     }
 
