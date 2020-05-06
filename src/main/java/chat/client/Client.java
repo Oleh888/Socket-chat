@@ -11,50 +11,38 @@ import java.time.format.DateTimeFormatter;
 
 class Client {
     private Socket socket;
-    private BufferedReader in;
-    private BufferedWriter out;
+    private BufferedReader clientReader;
+    private BufferedWriter clientWriter;
     private BufferedReader inputUser;
-    private String addr;
-    private int port;
     private String nickname;
 
-    public Client(String addr, int port) {
-        this.addr = addr;
-        this.port = port;
+    public Client(String addr, int port)  {
         try {
             this.socket = new Socket(addr, port);
-        } catch (IOException e) {
-            System.err.println("Socket failed");
-        }
-        try {
             inputUser = new BufferedReader(new InputStreamReader(System.in));
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            this.inputNick();
-            new Reader().start();
-            new Writer().start();
+            clientReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            clientWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            this.startChat();
         } catch (IOException e) {
             Client.this.downService();
         }
     }
 
-    private void inputNick() {
+    private void startChat() throws IOException {
         System.out.print("Please, provide your nickname: ");
-        try {
             nickname = inputUser.readLine();
-            out.write("Hello " + nickname + "!\n");
-            out.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            clientWriter.write("Hello " + nickname + "!\n");
+            clientWriter.flush();
+            new Reader().start();
+            new Writer().start();
     }
 
     private void downService() {
         try {
             if (!socket.isClosed()) {
                 socket.close();
-                in.close();
-                out.close();
+                clientReader.close();
+                clientWriter.close();
             }
         } catch (IOException e) {
             System.out.println("client left the chat");
@@ -68,7 +56,7 @@ class Client {
             String str;
             try {
                 while (true) {
-                    str = in.readLine();
+                    str = clientReader.readLine();
                     if (str.equals("stop")) {
                         Client.this.downService();
                         break;
@@ -76,7 +64,7 @@ class Client {
                     System.out.println(str);
                 }
             } catch (IOException e) {
-                Client.this.downService();
+                downService();
             }
         }
     }
@@ -91,13 +79,13 @@ class Client {
                     String time = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
                     userWord = inputUser.readLine();
                     if (userWord.equals("stop")) {
-                        out.write("stop" + "\n");
+                        clientWriter.write("stop" + "\n");
                         Client.this.downService();
                         break;
                     } else {
-                        out.write("(" + time + ") " + nickname + ": " + userWord + "\n");
+                        clientWriter.write("(" + time + ") " + nickname + ": " + userWord + "\n");
                     }
-                    out.flush();
+                    clientWriter.flush();
                 } catch (IOException e) {
                     Client.this.downService();
                 }

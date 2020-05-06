@@ -7,11 +7,11 @@ import java.util.LinkedList;
 class Story {
     private LinkedList<String> story = new LinkedList<>();
 
-    public void addStoryEl(String el) {
+    public void addStoryMessage(String message) {
         if (story.size() >= 10) {
             story.removeFirst();
         }
-        story.add(el);
+        story.add(message);
     }
 
     public void printStory(BufferedWriter writer) {

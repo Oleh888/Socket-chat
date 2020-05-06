@@ -10,21 +10,16 @@ public class Server {
     public static LinkedList<CreateServer> serverList = new LinkedList<>();
     public static Story story;
 
-    public static void main(String[] args) throws IOException {
-        ServerSocket server = new ServerSocket(PORT);
-        story = new Story();
-        System.out.println("Server Started");
-        try {
+    public static void main(String[] args) {
+        try (ServerSocket server = new ServerSocket(PORT)) {
+            story = new Story();
+            System.out.println("Server Started");
             while (true) {
                 Socket socket = server.accept();
-                try {
-                    serverList.add(new CreateServer(socket));
-                } catch (IOException e) {
-                    socket.close();
-                }
+                serverList.add(new CreateServer(socket));
             }
-        } finally {
-            server.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
