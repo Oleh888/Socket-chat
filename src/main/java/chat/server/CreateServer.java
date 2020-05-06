@@ -39,7 +39,7 @@ class CreateServer extends Thread {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            downService();
         }
     }
 
@@ -48,7 +48,7 @@ class CreateServer extends Thread {
             serverWriter.write(msg + "\n");
             serverWriter.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            downService();
         }
     }
 
@@ -66,7 +66,7 @@ class CreateServer extends Thread {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            downService();
         }
     }
 }

@@ -16,7 +16,7 @@ class Client {
     private BufferedReader inputUser;
     private String nickname;
 
-    public Client(String addr, int port)  {
+    public Client(String addr, int port) {
         try {
             this.socket = new Socket(addr, port);
             inputUser = new BufferedReader(new InputStreamReader(System.in));
@@ -24,17 +24,17 @@ class Client {
             clientWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             this.startChat();
         } catch (IOException e) {
-            Client.this.downService();
+            downService();
         }
     }
 
     private void startChat() throws IOException {
         System.out.print("Please, provide your nickname: ");
-            nickname = inputUser.readLine();
-            clientWriter.write("Hello " + nickname + "!\n");
-            clientWriter.flush();
-            new Reader().start();
-            new Writer().start();
+        nickname = inputUser.readLine();
+        clientWriter.write("Hello " + nickname + "!\n");
+        clientWriter.flush();
+        new Reader().start();
+        new Writer().start();
     }
 
     private void downService() {
@@ -87,7 +87,7 @@ class Client {
                     }
                     clientWriter.flush();
                 } catch (IOException e) {
-                    Client.this.downService();
+                    downService();
                 }
             }
         }
